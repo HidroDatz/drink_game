@@ -4,7 +4,7 @@ import Swiper from 'react-native-deck-swiper';
 import {useRoute} from '@react-navigation/native';
 const NeverHaveIEverPlay = () => {
   const route = useRoute();
-  const {optionPlay} = route.params;
+  const {optionPlay, players} = route.params;
   const [truthOrDareList, setTruthOrDareList] = useState([]);
   const [truthOrDareProList, setTruthOrDareProList] = useState([]);
   const [truthOrDarePromaxList, setTruthOrDarePromaxList] = useState([]);
@@ -25,18 +25,6 @@ const NeverHaveIEverPlay = () => {
   }, []);
 
   useEffect(() => {
-    if (showAd && index === 0) {
-      const timer = setTimeout(() => {
-        setShowSkipButton(true);
-      }, 10000); // 10 seconds
-
-      return () => {
-        clearTimeout(timer);
-      };
-    }
-  }, [showAd, index]);
-
-  useEffect(() => {
     const jsonData = require('../../data/BasicNeverHaveIEver.json');
     setTruthOrDareList(jsonData);
   }, []);
@@ -52,7 +40,17 @@ const NeverHaveIEverPlay = () => {
       setTruthOrDarePromaxList(combinedData);
     }
   }, [optionPlay]);
+  useEffect(() => {
+    if (showAd) {
+      const timer = setTimeout(() => {
+        setShowSkipButton(true);
+      }, 10000); // 10 seconds
 
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+  }, [showAd]);
   const shuffleArray = array => {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -60,22 +58,29 @@ const NeverHaveIEverPlay = () => {
     }
     return array;
   };
-
+  const handleSkipAd = () => {
+    setShowAd(false);
+    setShowSkipButton(false);
+  };
   const renderCard = (card, index) => {
     const isCardInList = truthOrDareList.includes(card);
     const cardStyle = isCardInList
       ? {...styles.card, backgroundColor: 'yellow'}
       : styles.card;
+
+    const randomPlayerIndex = Math.floor(Math.random() * players.length);
+    const randomPlayer = players[randomPlayerIndex];
+
     return (
       <View>
-        {showAd && index === 0 && (
+        {showAd && (
           <View style={styles.adBox}>
             <Text style={styles.adText}>Advertisement</Text>
             <Text style={styles.adTimer}>30s</Text>
             {showSkipButton && (
               <TouchableOpacity
                 style={styles.skipButton}
-                onPress={() => setShowAd(false)}>
+                onPress={handleSkipAd}>
                 <Text style={styles.skipButtonText}>Skip</Text>
               </TouchableOpacity>
             )}
@@ -83,6 +88,9 @@ const NeverHaveIEverPlay = () => {
         )}
         {!showAd && (
           <View style={cardStyle}>
+            {players.length > 0 && (
+              <Text style={styles.playerText}>Tới lượt của {randomPlayer}</Text>
+            )}
             <Text style={styles.text}>{card}</Text>
           </View>
         )}
