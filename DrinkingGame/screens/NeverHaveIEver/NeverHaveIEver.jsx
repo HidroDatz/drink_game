@@ -5,11 +5,11 @@ import {
   Image,
   Text,
   View,
+  Button,
   TouchableOpacity,
   Modal,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-
 const NeverHaveIEverHomeScreen = () => {
   const [loading, setLoading] = useState(true);
   const [players, setPlayers] = useState([]);
@@ -17,8 +17,11 @@ const NeverHaveIEverHomeScreen = () => {
   const [playerName, setPlayerName] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [showHelpText, setShowHelpText] = useState(false); // Add state for help text
+  const [isDisableAd, setIsDisableAd] = useState(true);
+  const closeAd = () => {
+    setIsDisableAd(false);
+  };
 
-  console.log(players);
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
@@ -73,6 +76,19 @@ const NeverHaveIEverHomeScreen = () => {
         />
       ) : (
         <>
+          <Modal visible={isDisableAd} animationType="slide">
+            <View style={styles.advertisingContainer}>
+              <Text style={styles.advertisingText}>Never Have I Ever</Text>
+              <Text style={styles.advertisingText}>
+                Play the ultimate party game!
+              </Text>
+              <Text style={styles.advertisingText}>
+                Buy premium to remove ads.
+                Play set basic.
+              </Text>
+              <Button title="X" onPress={closeAd} />
+            </View>
+          </Modal>
           <Image
             source={require('../../asset/truthordare.jpg')}
             style={styles.logo}
@@ -231,6 +247,18 @@ const styles = StyleSheet.create({
   helpText: {
     fontSize: 16,
     color: 'gray',
+    textAlign: 'center',
+  },
+  advertisingContainer: {
+    padding: 10,
+    borderRadius: 5,
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  advertisingText: {
+    fontSize: 18,
+    color: 'black',
     textAlign: 'center',
   },
 });

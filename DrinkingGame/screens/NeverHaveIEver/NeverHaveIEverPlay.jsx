@@ -1,18 +1,35 @@
 import React, {useState, useEffect} from 'react';
-import {View, TouchableOpacity, Text, StyleSheet, Image} from 'react-native';
+import {
+  View,
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+  Modal,
+  Button,
+} from 'react-native';
 import Swiper from 'react-native-deck-swiper';
 import {useRoute} from '@react-navigation/native';
 const NeverHaveIEverPlay = () => {
   const route = useRoute();
-  const {optionPlay, players} = route.params;
+  const { optionPlay, players } = route.params;
   const [truthOrDareList, setTruthOrDareList] = useState([]);
   const [truthOrDareProList, setTruthOrDareProList] = useState([]);
   const [truthOrDarePromaxList, setTruthOrDarePromaxList] = useState([]);
-
+  const [payForPlay, setPayForPlay] = useState('0');
   const [showAd, setShowAd] = useState(false);
   const [showSkipButton, setShowSkipButton] = useState(false);
+  const [isDisplayPayRequest, setIsDisplayPayRequest] = useState(true); // Added state for pay request modal
 
   useEffect(() => {
+    if (optionPlay === 'Free') {
+      setIsDisplayPayRequest(false); // Show pay request modal for Free option
+    }
+    if (optionPlay === 'Basic') {
+      setPayForPlay('45.000 VND');
+    }
+    if (optionPlay === 'Pro' || optionPlay === 'Promax') {
+      setPayForPlay('15.000 VND');
+    }
     const adTimer = setInterval(() => {
       if (optionPlay === 'Free') {
         setShowAd(true);
@@ -65,7 +82,7 @@ const NeverHaveIEverPlay = () => {
   const renderCard = (card, index) => {
     const isCardInList = truthOrDareList.includes(card);
     const cardStyle = isCardInList
-      ? {...styles.card, backgroundColor: 'yellow'}
+      ? { ...styles.card, backgroundColor: 'yellow' }
       : styles.card;
 
     const randomPlayerIndex = Math.floor(Math.random() * players.length);
@@ -73,6 +90,15 @@ const NeverHaveIEverPlay = () => {
 
     return (
       <View>
+        {!showAd && (
+          <View style={cardStyle}>
+            {players.length > 0 && (
+              <Text style={styles.playerText}>Tới lượt của {randomPlayer}</Text>
+            )}
+            <Text style={styles.text}>{card}</Text>
+          </View>
+        )}
+
         {showAd && (
           <View style={styles.adBox}>
             <Text style={styles.adText}>Advertisement</Text>
@@ -84,14 +110,6 @@ const NeverHaveIEverPlay = () => {
                 <Text style={styles.skipButtonText}>Skip</Text>
               </TouchableOpacity>
             )}
-          </View>
-        )}
-        {!showAd && (
-          <View style={cardStyle}>
-            {players.length > 0 && (
-              <Text style={styles.playerText}>Tới lượt của {randomPlayer}</Text>
-            )}
-            <Text style={styles.text}>{card}</Text>
           </View>
         )}
       </View>
@@ -107,13 +125,28 @@ const NeverHaveIEverPlay = () => {
   } else {
     cardsToRender = [...truthOrDareList];
   }
+
   const shuffledCards = shuffleArray(cardsToRender);
+
   return (
     <View style={styles.container}>
       <Swiper cards={shuffledCards} renderCard={renderCard} />
+
+      {/* Pay request modal */}
+      <Modal visible={isDisplayPayRequest} animationType="slide">
+        <View style={styles.modalContainer}>
+          <Text style={styles.modalText}>Please pay {payForPlay} to play {optionPlay} mode</Text>
+          <TouchableOpacity
+            style={styles.closeButton}
+            onPress={() => setIsDisplayPayRequest(false)}>
+            <Text style={styles.closeButtonText}>X</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -159,6 +192,24 @@ const styles = StyleSheet.create({
   adTimer: {
     fontSize: 14,
     color: 'gray',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalText: {
+    fontSize: 18,
+    marginBottom: 20,
+  },
+  closeButton: {
+    backgroundColor: 'red',
+    padding: 10,
+    borderRadius: 5,
+  },
+  closeButtonText: {
+    color: 'white',
+    fontSize: 16,
   },
 });
 
