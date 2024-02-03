@@ -1,56 +1,105 @@
-import React, {useEffect, useState} from 'react';
-import {StyleSheet, Image, Text, View, TouchableOpacity} from 'react-native';
-import NeverHaveIEverHomeScreen from './screens/NeverHaveIEver/NeverHaveIEver';
-import ComingSoonScreen from './screens/Updating';
-import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import React, { useEffect, useRef, useState } from 'react';
+import { StyleSheet, View, Animated, TouchableOpacity } from 'react-native';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import * as Animatable from 'react-native-animatable';
 import NeverHaveIEverPlay from './screens/NeverHaveIEver/NeverHaveIEverPlay';
+import ComingSoonScreen from './screens/Updating';
+import BeerButton from './screens/Button/Drinking';
+import YesNoButton from './screens/Button/NeverHaveIEver';
+import CoupleButton from './screens/Button/CoupleButton';
+import TruthOrDare from './screens/Button/TruthOrDare';
+import OpenLoading from './screens/loading/OpenAppLoading';
+import NeverHaveIEverHomeScreen from './screens/NeverHaveIEver/NeverHaveIEver';
+
 const Stack = createNativeStackNavigator();
 
-const HomeScreen = ({navigation}) => {
-  const [loading, setLoading] = useState(true);
+const HomeScreen = () => {
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const [showOpenLoading, setShowOpenLoading] = useState(true);
+  const navigation = useNavigation();
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 0);
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 1500,
+      useNativeDriver: false,
+    }).start();
 
-    return () => clearTimeout(timer);
-  }, []);
+    setTimeout(() => {
+      setShowOpenLoading(false);
+    }, 5000); // Hide OpenLoading after 5 seconds
+  }, [fadeAnim]);
+
+  const buttonAnimationProps = {
+    animation: 'slideInUp',
+    iterationCount: 1,
+    duration: 1500,
+    useNativeDriver: false,
+  };
+
+  const handleYesNoButtonClick = () => {
+    navigation.navigate('Never Have I Ever');
+  };
+
+  const handleOtherButtonClick = () => {
+    navigation.navigate('Service Updating');
+  };
 
   return (
-    <View style={styles.container}>
-      {loading ? (
-        <Image source={require('./asset/play.jpg')} style={styles.logo} />
+    <>
+      {showOpenLoading ? (
+        <OpenLoading />
       ) : (
-        <>
-          <Image source={require('./asset/play.jpg')} style={styles.logo} />
-          <Text style={styles.header}>Welcome to CAK Games</Text>
-          <View style={styles.optionsContainer}>
-            <TouchableOpacity
-              style={styles.optionButton}
-              onPress={() => navigation.navigate('Never Have I Ever')}>
-              <Text style={styles.optionText}>Never have I ever</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.optionButton}
-              onPress={() => navigation.navigate('Service Updating')}>
-              <Text style={styles.optionText}>Option 2</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.optionButton}
-              onPress={() => navigation.navigate('Service Updating')}>
-              <Text style={styles.optionText}>Option 3</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.optionButton}
-              onPress={() => navigation.navigate('Service Updating')}>
-              <Text style={styles.optionText}>Option 4</Text>
-            </TouchableOpacity>
-          </View>
-        </>
+        <View style={styles.container}>
+          <Animatable.Image
+            source={require('./asset/logo.png')}
+            style={[styles.logo, { opacity: fadeAnim, resizeMode: 'contain', marginLeft: '5%' }]}
+            animation="fadeIn"
+          />
+
+          <TouchableOpacity onPress={handleOtherButtonClick} style={{width: '100%'}}>
+            <Animatable.View
+              {...buttonAnimationProps}
+              delay={500}
+              style={[styles.buttonContainer, ]}
+            >
+              <BeerButton />
+            </Animatable.View>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={handleYesNoButtonClick} style={{width: '100%'}}>
+            <Animatable.View
+              {...buttonAnimationProps}
+              delay={1000}
+              style={[styles.buttonContainer, ]}
+            >
+              <YesNoButton />
+            </Animatable.View>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={handleOtherButtonClick} style={{width: '100%'}}>
+            <Animatable.View
+              {...buttonAnimationProps}
+              delay={1500}
+              style={[styles.buttonContainer, ]}
+            >
+              <CoupleButton />
+            </Animatable.View>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={handleOtherButtonClick} style={{width: '100%'}}>
+            <Animatable.View
+              {...buttonAnimationProps}
+              delay={2000}
+              style={[styles.buttonContainer, ]}
+            >
+              <TruthOrDare />
+            </Animatable.View>
+          </TouchableOpacity>
+        </View>
       )}
-    </View>
+    </>
   );
 };
 
@@ -59,10 +108,7 @@ const App = () => {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen
-          name="Never Have I Ever"
-          component={NeverHaveIEverHomeScreen}
-        />
+        <Stack.Screen name="Never Have I Ever" component={NeverHaveIEverHomeScreen} />
         <Stack.Screen name="Service Updating" component={ComingSoonScreen} />
         <Stack.Screen name="Never Have I Ever Play" component={NeverHaveIEverPlay} />
       </Stack.Navigator>
@@ -73,6 +119,7 @@ const App = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#f7e0c1',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -80,23 +127,9 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
   },
-  header: {
-    fontSize: 24,
-    marginBottom: 20,
-  },
-  optionsContainer: {
+  buttonContainer: {
     marginTop: 20,
-  },
-  optionButton: {
-    marginBottom: 10,
-    backgroundColor: 'blue',
-    padding: 10,
-    borderRadius: 5,
-  },
-  optionText: {
-    fontSize: 18,
-    color: 'white',
-    textAlign: 'center',
+    alignItems: 'center',
   },
 });
 

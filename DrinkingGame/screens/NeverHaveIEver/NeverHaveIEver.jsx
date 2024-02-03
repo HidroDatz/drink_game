@@ -1,26 +1,26 @@
-import React, {useEffect, useState} from 'react';
-import {
-  StyleSheet,
-  TextInput,
-  Image,
-  Text,
-  View,
-  Button,
-  TouchableOpacity,
-  Modal,
-} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import * as Animatable from 'react-native-animatable';
+import AdModal from '../AdModal';
+import Options from '../Options';
+import PlayerInputModal from '../PlayerInputModal';
+
 const NeverHaveIEverHomeScreen = () => {
   const [loading, setLoading] = useState(true);
   const [players, setPlayers] = useState([]);
   const navigation = useNavigation();
-  const [playerName, setPlayerName] = useState('');
-  const [modalVisible, setModalVisible] = useState(false);
-  const [showHelpText, setShowHelpText] = useState(false); // Add state for help text
-  const [isDisableAd, setIsDisableAd] = useState(true);
-  const closeAd = () => {
-    setIsDisableAd(false);
-  };
+  const [showHelpText, setShowHelpText] = useState(false);
+  const [adModalVisible, setAdModalVisible] = useState(true);
+  const [playerInputModalVisible, setPlayerInputModalVisible] = useState(false);
+
+  const options = [
+    { text: 'Free', route: 'Free' },
+    { text: 'Basic', route: 'Basic' },
+    { text: 'Pro', route: 'Pro' },
+    { text: 'Promax', route: 'Promax' },
+    { text: 'Add Player', route: 'AddPlayer' },
+  ];
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -30,31 +30,19 @@ const NeverHaveIEverHomeScreen = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  const closeAd = () => {
+    setAdModalVisible(false);
+  };
+
   const handleOptionPress = optionPlay => {
-    navigation.navigate('Never Have I Ever Play', {
-      optionPlay: optionPlay,
-      players: players,
-    });
-  };
-
-  const handleAddPlayer = () => {
-    setModalVisible(true);
-  };
-
-  const handlePlayerNameChange = playerNamer => {
-    setPlayerName(playerNamer);
-    setShowHelpText(false); // Reset help text when user types
-  };
-
-  const handleSubmitPlayer = () => {
-    if (playerName.trim() === '') {
-      setShowHelpText(true); // Show help text if player name is empty
-      return;
+    if (optionPlay === 'AddPlayer') {
+      setPlayerInputModalVisible(true);
+    } else {
+      navigation.navigate('Never Have I Ever Play', {
+        optionPlay: optionPlay,
+        players: players,
+      });
     }
-
-    setPlayers([...players, playerName]);
-    setPlayerName('');
-    setModalVisible(false);
   };
 
   const handleRemovePlayer = index => {
@@ -63,109 +51,36 @@ const NeverHaveIEverHomeScreen = () => {
     setPlayers(updatedPlayers);
   };
 
-  const handleModalClose = () => {
-    setModalVisible(false);
+  const onSubmitPlayer = playerName => {
+    setPlayers([...players, playerName]);
   };
 
   return (
     <View style={styles.container}>
       {loading ? (
-        <Image
+        <Animatable.Image
           source={require('../../asset/truthordare.jpg')}
           style={styles.logo}
+          animation="fadeIn"
         />
       ) : (
         <>
-          <Modal visible={isDisableAd} animationType="slide">
-            <View style={styles.advertisingContainer}>
-              <Text style={styles.advertisingText}>Never Have I Ever</Text>
-              <Text style={styles.advertisingText}>
-                Play the ultimate party game!
-              </Text>
-              <Text style={styles.advertisingText}>
-                Buy premium to remove ads.
-                Play set basic.
-              </Text>
-              <Button title="X" onPress={closeAd} />
-            </View>
-          </Modal>
-          <Image
+          <AdModal isVisible={adModalVisible} onClose={closeAd} />
+          <Animatable.Image
             source={require('../../asset/truthordare.jpg')}
             style={styles.logo}
+            animation="fadeIn"
           />
           <Text style={styles.header}>Never Have I Ever</Text>
-          <View style={styles.optionsContainer}>
-            <TouchableOpacity
-              style={styles.optionButton}
-              onPress={() => handleOptionPress('Free')}>
-              <Text style={styles.optionText}>Free</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.optionButton}
-              onPress={() => handleOptionPress('Basic')}>
-              <Text style={styles.optionText}>Basic</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.optionButton}
-              onPress={() => handleOptionPress('Pro')}>
-              <Text style={styles.optionText}>Pro</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.optionButton}
-              onPress={() => handleOptionPress('Promax')}>
-              <Text style={styles.optionText}>Promax</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.optionButton}
-              onPress={handleAddPlayer}>
-              <Text style={styles.optionText}>Add Player</Text>
-            </TouchableOpacity>
-          </View>
-
-          <Modal
-            animationType="slide"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={handleModalClose}>
-            <TouchableOpacity
-              style={styles.modalContainer}
-              onPress={handleModalClose}>
-              <View style={styles.modalContent}>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Enter player name"
-                  onChangeText={handlePlayerNameChange}
-                  value={playerName}
-                />
-                {showHelpText && (
-                  <Text style={styles.helpText}>Please enter player name</Text>
-                )}
-                {/* Show help text if needed */}
-                <TouchableOpacity
-                  style={styles.submitButton}
-                  onPress={handleSubmitPlayer}>
-                  <Text style={styles.submitButtonText}>Submit</Text>
-                </TouchableOpacity>
-                {players.length > 0 && (
-                  <View>
-                    <Text style={styles.playerName}>
-                      {' '}
-                      Người chơi hiện tại gồm:{' '}
-                    </Text>
-                    {players.map((player, index) => (
-                      <View key={index} style={styles.playerContainer}>
-                        <Text style={styles.playerName}>{player}</Text>
-                        <TouchableOpacity
-                          onPress={() => handleRemovePlayer(index)}>
-                          <Text style={styles.removeButton}>X</Text>
-                        </TouchableOpacity>
-                      </View>
-                    ))}
-                  </View>
-                )}
-              </View>
-            </TouchableOpacity>
-          </Modal>
+          <Options options={options} handleOptionPress={handleOptionPress} />
+          <PlayerInputModal
+            isVisible={playerInputModalVisible}
+            onClose={() => setPlayerInputModalVisible(false)}
+            onSubmitPlayer={onSubmitPlayer}
+            showHelpText={setShowHelpText}
+            players={players}
+            onRemovePlayer={handleRemovePlayer}
+          />
         </>
       )}
     </View>
@@ -247,18 +162,6 @@ const styles = StyleSheet.create({
   helpText: {
     fontSize: 16,
     color: 'gray',
-    textAlign: 'center',
-  },
-  advertisingContainer: {
-    padding: 10,
-    borderRadius: 5,
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  advertisingText: {
-    fontSize: 18,
-    color: 'black',
     textAlign: 'center',
   },
 });

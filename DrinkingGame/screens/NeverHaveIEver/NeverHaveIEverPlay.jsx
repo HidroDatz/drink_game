@@ -5,7 +5,6 @@ import {
   Text,
   StyleSheet,
   Modal,
-  Button,
 } from 'react-native';
 import Swiper from 'react-native-deck-swiper';
 import {useRoute} from '@react-navigation/native';
@@ -131,8 +130,6 @@ const NeverHaveIEverPlay = () => {
   return (
     <View style={styles.container}>
       <Swiper cards={shuffledCards} renderCard={renderCard} />
-
-      {/* Pay request modal */}
       <Modal visible={isDisplayPayRequest} animationType="slide">
         <View style={styles.modalContainer}>
           <Text style={styles.modalText}>Please pay {payForPlay} to play {optionPlay} mode</Text>
