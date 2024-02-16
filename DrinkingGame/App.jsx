@@ -18,6 +18,7 @@ const HomeScreen = () => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const [showOpenLoading, setShowOpenLoading] = useState(true);
   const navigation = useNavigation();
+  const buttonRefs = useRef([null, null, null, null]);
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -45,7 +46,18 @@ const HomeScreen = () => {
   const handleOtherButtonClick = () => {
     navigation.navigate('Service Updating');
   };
-
+  const startButtonAnimation = (index) => {
+    if (buttonRefs.current[index]) {
+      buttonRefs.current[index].animate([{ ...buttonAnimationProps }]);
+    }
+  };
+  useEffect(() => {
+    buttonRefs.current.forEach((ref, index) => {
+      setTimeout(() => {
+        startButtonAnimation(index);
+      }, 500 * index); // Add a delay for each button
+    });
+  }, []);
   return (
     <>
       {showOpenLoading ? (
@@ -58,41 +70,41 @@ const HomeScreen = () => {
             animation="fadeIn"
           />
 
-          <TouchableOpacity onPress={handleOtherButtonClick} style={{width: '100%'}}>
+          <TouchableOpacity onPress={handleOtherButtonClick} style={{ width: '100%' }}>
             <Animatable.View
               {...buttonAnimationProps}
-              delay={500}
-              style={[styles.buttonContainer, ]}
+              style={[styles.buttonContainer]}
+              ref={(ref) => (buttonRefs.current[0] = ref)}
             >
               <BeerButton />
             </Animatable.View>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={handleYesNoButtonClick} style={{width: '100%'}}>
+          <TouchableOpacity onPress={handleYesNoButtonClick} style={{ width: '100%' }}>
             <Animatable.View
               {...buttonAnimationProps}
-              delay={1000}
-              style={[styles.buttonContainer, ]}
+              style={[styles.buttonContainer]}
+              ref={(ref) => (buttonRefs.current[1] = ref)}
             >
               <YesNoButton />
             </Animatable.View>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={handleOtherButtonClick} style={{width: '100%'}}>
+          <TouchableOpacity onPress={handleOtherButtonClick} style={{ width: '100%' }}>
             <Animatable.View
               {...buttonAnimationProps}
-              delay={1500}
-              style={[styles.buttonContainer, ]}
+              style={[styles.buttonContainer]}
+              ref={(ref) => (buttonRefs.current[2] = ref)}
             >
               <CoupleButton />
             </Animatable.View>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={handleOtherButtonClick} style={{width: '100%'}}>
+          <TouchableOpacity onPress={handleOtherButtonClick} style={{ width: '100%' }}>
             <Animatable.View
               {...buttonAnimationProps}
-              delay={2000}
-              style={[styles.buttonContainer, ]}
+              style={[styles.buttonContainer]}
+              ref={(ref) => (buttonRefs.current[3] = ref)}
             >
               <TruthOrDare />
             </Animatable.View>

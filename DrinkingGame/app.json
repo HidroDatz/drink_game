@@ -1,4 +1,7 @@
 {
   "name": "DrinkingGame",
-  "displayName": "DrinkingGame"
+  "displayName": "DrinkingGame",
+  "react-native-google-mobile-ads": {
+    "android_app_id": "ca-app-pub-3744432596938224~1217877549" 
+    }
 }

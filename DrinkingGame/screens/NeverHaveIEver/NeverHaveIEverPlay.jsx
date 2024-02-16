@@ -1,43 +1,37 @@
-import React, {useState, useEffect} from 'react';
-import {
-  View,
-  TouchableOpacity,
-  Text,
-  StyleSheet,
-  Modal,
-} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, Image,TouchableOpacity,Modal } from 'react-native';
 import Swiper from 'react-native-deck-swiper';
-import {useRoute} from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native';
+import PlayerInputModal from '../PlayerInputModal';
+import WheelRandom from '../WheelPlayer';
+import AdModal from '../AdScreens/AdMod'
+import HintPlay from './HintToPlay';
 const NeverHaveIEverPlay = () => {
   const route = useRoute();
-  const { optionPlay, players } = route.params;
+  const { optionPlay } = route.params;
   const [truthOrDareList, setTruthOrDareList] = useState([]);
   const [truthOrDareProList, setTruthOrDareProList] = useState([]);
   const [truthOrDarePromaxList, setTruthOrDarePromaxList] = useState([]);
   const [payForPlay, setPayForPlay] = useState('0');
-  const [showAd, setShowAd] = useState(false);
-  const [showSkipButton, setShowSkipButton] = useState(false);
-  const [isDisplayPayRequest, setIsDisplayPayRequest] = useState(true); // Added state for pay request modal
-
+  const [isDisplayPayRequest, setIsDisplayPayRequest] = useState(true);
+  const [playerInputModalVisible, setPlayerInputModalVisible] = useState(true);
+  const [players, setPlayers] = useState([]);
+  const [showHelpText, setShowHelpText] = useState(false);
+  const hint = require('../../asset/hint_to_play/1.png')
+  const [isHintVisible, setIsHintVisible] = useState(false);
+  const handleHintPress = () => {
+    setIsHintVisible(true);
+};
   useEffect(() => {
-    if (optionPlay === 'Free') {
-      setIsDisplayPayRequest(false); // Show pay request modal for Free option
-    }
     if (optionPlay === 'Basic') {
-      setPayForPlay('45.000 VND');
+      setIsDisplayPayRequest(false);
     }
-    if (optionPlay === 'Pro' || optionPlay === 'Promax') {
-      setPayForPlay('15.000 VND');
+    if (optionPlay === 'Pro') {
+      setPayForPlay('60.000 VND');
     }
-    const adTimer = setInterval(() => {
-      if (optionPlay === 'Free') {
-        setShowAd(true);
-      }
-    }, 30000); // 300 seconds
-
-    return () => {
-      clearInterval(adTimer);
-    };
+    if (optionPlay === 'Promax') {
+      setPayForPlay('90.000 VND')
+    }
   }, []);
 
   useEffect(() => {
@@ -56,63 +50,23 @@ const NeverHaveIEverPlay = () => {
       setTruthOrDarePromaxList(combinedData);
     }
   }, [optionPlay]);
-  useEffect(() => {
-    if (showAd) {
-      const timer = setTimeout(() => {
-        setShowSkipButton(true);
-      }, 10000); // 10 seconds
 
-      return () => {
-        clearTimeout(timer);
-      };
-    }
-  }, [showAd]);
+  const handleRemovePlayer = index => {
+    const updatedPlayers = [...players];
+    updatedPlayers.splice(index, 1);
+    setPlayers(updatedPlayers);
+  };
+
+  const onSubmitPlayer = playerName => {
+    setPlayers([...players, playerName]);
+  };
+
   const shuffleArray = array => {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [array[i], array[j]] = [array[j], array[i]];
     }
     return array;
-  };
-  const handleSkipAd = () => {
-    setShowAd(false);
-    setShowSkipButton(false);
-  };
-  const renderCard = (card, index) => {
-    const isCardInList = truthOrDareList.includes(card);
-    const cardStyle = isCardInList
-      ? { ...styles.card, backgroundColor: 'yellow' }
-      : styles.card;
-
-    const randomPlayerIndex = Math.floor(Math.random() * players.length);
-    const randomPlayer = players[randomPlayerIndex];
-
-    return (
-      <View>
-        {!showAd && (
-          <View style={cardStyle}>
-            {players.length > 0 && (
-              <Text style={styles.playerText}>Tới lượt của {randomPlayer}</Text>
-            )}
-            <Text style={styles.text}>{card}</Text>
-          </View>
-        )}
-
-        {showAd && (
-          <View style={styles.adBox}>
-            <Text style={styles.adText}>Advertisement</Text>
-            <Text style={styles.adTimer}>30s</Text>
-            {showSkipButton && (
-              <TouchableOpacity
-                style={styles.skipButton}
-                onPress={handleSkipAd}>
-                <Text style={styles.skipButtonText}>Skip</Text>
-              </TouchableOpacity>
-            )}
-          </View>
-        )}
-      </View>
-    );
   };
 
   let cardsToRender = [];
@@ -126,11 +80,47 @@ const NeverHaveIEverPlay = () => {
   }
 
   const shuffledCards = shuffleArray(cardsToRender);
+  const renderCard = (card, index) => {
+    const isCardInList = truthOrDareList.includes(card);
+    const cardStyle = isCardInList
+      ? { ...styles.card }
+      : styles.card;
+
+
+    return (
+      <View style={[styles.cardContainer]}>
+        <PlayerInputModal
+          isVisible={playerInputModalVisible}
+          onClose={() => setPlayerInputModalVisible(false)}
+          onSubmitPlayer={onSubmitPlayer}
+          showHelpText={setShowHelpText}
+          players={players}
+          onRemovePlayer={handleRemovePlayer}
+        />
+
+        {!playerInputModalVisible && (
+          <View style={[[cardStyle]]}>
+            <Text style={styles.text}>{card}</Text>
+          </View>
+        )}
+      </View>
+    );
+  };
+
 
   return (
-    <View style={styles.container}>
-      <Swiper cards={shuffledCards} renderCard={renderCard} />
-      <Modal visible={isDisplayPayRequest} animationType="slide">
+
+    <View style={[styles.container]}>
+
+      <Swiper
+        cards={shuffledCards}
+        renderCard={renderCard}
+        cardIndex={0}
+        stackSize={3}
+        stackSeparation={-15}
+        backgroundColor="transparent"
+      />
+            <Modal visible={isDisplayPayRequest} animationType="slide">
         <View style={styles.modalContainer}>
           <Text style={styles.modalText}>Please pay {payForPlay} to play {optionPlay} mode</Text>
           <TouchableOpacity
@@ -140,6 +130,12 @@ const NeverHaveIEverPlay = () => {
           </TouchableOpacity>
         </View>
       </Modal>
+      {players.length > 0 && <WheelRandom players={players} />}
+      <TouchableOpacity onPress={handleHintPress}>
+        <Image source={hint} style={{ width: 100, height: 100, transform: [{ translateY: -320 }, { translateX: 150 }] }} />
+      </TouchableOpacity>
+      {isHintVisible && (<HintPlay isVisible={isHintVisible} onClose={() => setIsHintVisible(false)}/>)}
+      <AdModal />
     </View>
   );
 };
@@ -149,20 +145,28 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#feebda'
+  },
+  cardContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   card: {
-    marginTop: '40%',
-    height: '50%',
+    height: '60%',
+    width: '80%',
     borderRadius: 10,
-    backgroundColor: 'white',
     padding: 20,
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 5,
+    marginBottom: "40%",
+    backgroundColor: '#e78426'
   },
   text: {
-    fontSize: 18,
+    fontSize: 22,
     textAlign: 'center',
+    fontFamily: 'Mansalva-Regular',
+
   },
   bottomText: {
     position: 'absolute',
@@ -170,6 +174,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     fontSize: 16,
     fontWeight: 'bold',
+
   },
   adBox: {
     marginTop: '40%',
@@ -191,13 +196,14 @@ const styles = StyleSheet.create({
     color: 'gray',
   },
   modalContainer: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
   modalText: {
     fontSize: 18,
     marginBottom: 20,
+    fontFamily: 'Mansalva-Regular',
+
   },
   closeButton: {
     backgroundColor: 'red',
