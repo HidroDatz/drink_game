@@ -31,10 +31,14 @@ const OpenLoading = () => {
         return () => clearInterval(intervalId);
     }, [images, fadeInAnim]);
 
+    const { width, height } = Dimensions.get('window');
+    const imageWidth = width * 0.95; 
+    const imageHeight = height * 0.8 * 0.45; 
+
     return (
         <>
-            <Animated.View style={{ opacity: fadeInAnim }}>
-                <Image source={images[currentImageIndex]} style={styles.image} />
+            <Animated.View style={{ opacity: fadeInAnim, justifyContent: 'center', alignItems: 'center' }}>
+                <Image source={images[currentImageIndex]} style={[styles.image, { width: imageWidth, height: imageHeight }]} />
             </Animated.View>
             <View>
                 <FastImage source={animationGif} style={styles.gif} />
