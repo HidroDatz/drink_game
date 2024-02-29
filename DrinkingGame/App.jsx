@@ -11,7 +11,10 @@ import CoupleButton from './screens/Button/CoupleButton';
 import TruthOrDare from './screens/Button/TruthOrDare';
 import OpenLoading from './screens/loading/OpenAppLoading';
 import NeverHaveIEverHomeScreen from './screens/NeverHaveIEver/NeverHaveIEver';
-
+import DrinkingGameScreen from './screens/DrinkingGame/DringkingGameScreen';
+import DringkingGamePlay from './screens/DrinkingGame/DringkingGamePlay';
+import CoupleGameScreen from './screens/Couple/CoupleGameScreen';
+import CoupleGameplay from './screens/Couple/CoupleGamePlay';
 const Stack = createNativeStackNavigator();
 
 const HomeScreen = () => {
@@ -46,6 +49,12 @@ const HomeScreen = () => {
   const handleOtherButtonClick = () => {
     navigation.navigate('Service Updating');
   };
+  const handleBeerButtonClick = () => {
+    navigation.navigate('Drinking Game');
+  };
+  const handleCoupleButtonClick = () => {
+    navigation.navigate('Couple Game');
+  };
   const startButtonAnimation = (index) => {
     if (buttonRefs.current[index]) {
       buttonRefs.current[index].animate([{ ...buttonAnimationProps }]);
@@ -70,7 +79,7 @@ const HomeScreen = () => {
             animation="fadeIn"
           />
 
-          <TouchableOpacity onPress={handleOtherButtonClick} style={{ width: '100%' }}>
+          <TouchableOpacity onPress={handleBeerButtonClick} style={{ width: '100%' }}>
             <Animatable.View
               {...buttonAnimationProps}
               style={[styles.buttonContainer]}
@@ -90,7 +99,7 @@ const HomeScreen = () => {
             </Animatable.View>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={handleOtherButtonClick} style={{ width: '100%' }}>
+          <TouchableOpacity onPress={handleCoupleButtonClick} style={{ width: '100%' }}>
             <Animatable.View
               {...buttonAnimationProps}
               style={[styles.buttonContainer]}
@@ -121,8 +130,13 @@ const App = () => {
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Never Have I Ever" component={NeverHaveIEverHomeScreen} />
+        <Stack.Screen name="Drinking Game" component={DrinkingGameScreen} />
+        <Stack.Screen name="Couple Game" component={CoupleGameScreen} />
+        <Stack.Screen name="Couple Game Play" component={CoupleGameplay} />
         <Stack.Screen name="Service Updating" component={ComingSoonScreen} />
         <Stack.Screen name="Never Have I Ever Play" component={NeverHaveIEverPlay} />
+        <Stack.Screen name="Drinking Game Play" component={DringkingGamePlay} />
+
       </Stack.Navigator>
     </NavigationContainer>
   );

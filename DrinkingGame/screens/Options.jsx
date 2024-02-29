@@ -2,9 +2,8 @@ import React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 
-const Options = ({ options, handleOptionPress }) => {
+const Options = ({ options, handleOptionPress, backgroudCode }) => {
   const icon_lock = require('../asset/lock.png');
-
   return (
     <View style={{ marginTop: 20 }}>
       {options.map((option, index) => (
@@ -13,14 +12,16 @@ const Options = ({ options, handleOptionPress }) => {
           style={styles.optionContainer}
           animation="fadeIn"
           delay={500 * (index + 1)}>
-          <TouchableOpacity style={styles.optionButton} onPress={() => handleOptionPress(option.route)}>
+          <TouchableOpacity
+            style={[
+              styles.optionButton,
+              backgroudCode !== undefined ? { backgroundColor: backgroudCode } : null,
+            ]}
+            onPress={() => handleOptionPress(option.route)}>
             <View style={styles.buttonContent}>
               <Text style={{ fontSize: 18, color: 'white', textAlign: 'center', }}>{option.text}</Text>
-              {option.text.toLowerCase().includes('pro') || option.text.toLowerCase().includes('promax') ? (
-                <Image source={icon_lock} style={styles.icon} />
-              ) : null}
+              {index !== 0 && <Image source={icon_lock} style={styles.icon} />}
             </View>
-            
           </TouchableOpacity>
           <Text style={styles.helpText}>{option.helpText}</Text>
         </Animatable.View>
@@ -49,12 +50,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   icon: {
-    marginLeft:-15,
+    marginLeft: -15,
     width: 25,
     height: 25,
     transform: [
-      {translateX:15},
-      {translateY: -20}
+      { translateX: 15 },
+      { translateY: -20 }
     ]
   },
   optionText: {

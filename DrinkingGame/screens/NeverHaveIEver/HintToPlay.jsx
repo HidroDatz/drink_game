@@ -13,14 +13,14 @@ function HintPlay({ isVisible, onClose }) {
 
     const handleSwipe = () => {
         if (currentIndex === hintImages.length - 1) {
-            onClose(); // Close the modal after swiping out the last image
+            onClose();
         } else {
             setCurrentIndex(prevIndex => prevIndex + 1);
         }
     };
 
     const handleOutsideClick = () => {
-        onClose(); // Close the modal when clicking outside
+        onClose();
     };
 
     return (
