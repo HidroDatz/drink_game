@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, StyleSheet, Image, Animated } from 'react-native';
+import { View, StyleSheet, Image, Animated, Dimensions } from 'react-native';
 import FastImage from 'react-native-fast-image';
 
 const OpenLoading = () => {
