@@ -56,8 +56,7 @@ const PlayerInputModal = ({ isVisible, onClose, onSubmitPlayer, showHelpText, pl
           ) : (
             <View style={styles.addPlayerForm}>
               <TextInput
-                style={styles.input}
-                placeholder="Enter player name"
+                style={[styles.input]}
                 onChangeText={handlePlayerNameChange}
                 value={playerName}
               />
@@ -108,6 +107,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 10,
     fontWeight: 'bold',
+    color: 'black', 
   },
   addButton: {
     backgroundColor: '#df8656',
@@ -133,7 +133,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'gray',
     marginBottom: 10,
-    paddingHorizontal: 10
+    paddingHorizontal: 10,
+    borderRadius: 20,
+    backgroundColor: "black"
   },
   submitButton: {
     backgroundColor: '#df8656',

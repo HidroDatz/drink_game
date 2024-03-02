@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image,TouchableOpacity,Modal } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Modal } from 'react-native';
 import Swiper from 'react-native-deck-swiper';
 import { useRoute } from '@react-navigation/native';
 import PlayerInputModal from '../PlayerInputModal';
@@ -21,7 +21,7 @@ const NeverHaveIEverPlay = () => {
   const [isHintVisible, setIsHintVisible] = useState(false);
   const handleHintPress = () => {
     setIsHintVisible(true);
-};
+  };
   useEffect(() => {
     if (optionPlay === 'Basic') {
       setIsDisplayPayRequest(false);
@@ -120,7 +120,7 @@ const NeverHaveIEverPlay = () => {
         stackSeparation={-15}
         backgroundColor="transparent"
       />
-            <Modal visible={isDisplayPayRequest} animationType="slide">
+      <Modal visible={isDisplayPayRequest} animationType="slide">
         <View style={styles.modalContainer}>
           <Text style={styles.modalText}>Please pay {payForPlay} to play {optionPlay} mode</Text>
           <TouchableOpacity
@@ -131,10 +131,15 @@ const NeverHaveIEverPlay = () => {
         </View>
       </Modal>
       {players.length > 0 && <WheelRandom players={players} />}
-      <TouchableOpacity onPress={handleHintPress}>
-        <Image source={hint} style={{ width: 100, height: 100, transform: [{ translateY: -320 }, { translateX: 150 }] }} />
+      <TouchableOpacity style={styles.imageContainer} onPress={handleHintPress}>
+
+        <Image
+          source={hint}
+          style={styles.image}
+          resizeMode="contain"
+        />
       </TouchableOpacity>
-      {isHintVisible && (<HintPlay isVisible={isHintVisible} onClose={() => setIsHintVisible(false)}/>)}
+      {isHintVisible && <HintPlay onClose={() => setIsHintVisible(false)} />}
       <AdModal />
     </View>
   );
@@ -161,6 +166,15 @@ const styles = StyleSheet.create({
     elevation: 5,
     marginBottom: "40%",
     backgroundColor: '#e78426'
+  },
+  imageContainer: {
+    position: 'absolute',
+    top: 0, 
+    right: -0, 
+  },
+  image: {
+    width: 100, 
+    height: 100, 
   },
   text: {
     fontSize: 22,

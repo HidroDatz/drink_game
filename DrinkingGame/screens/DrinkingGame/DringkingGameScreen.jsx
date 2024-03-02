@@ -38,8 +38,8 @@ const DrinkingGameScreen = () => {
         <>
           <Image source={logo} style={styles.logo} />
           <BeerButton />
-          <Text style={[styles.header, { marginTop: 20, fontWeight: 'bold' }]}>Cùng đám bạn không say -</Text>
-          <Text style={[styles.header, { fontWeight: 'bold' }]}>không về</Text>
+          <Text style={[styles.header, { marginTop: 20, fontWeight: 'bold',color: 'black'  }]}>Cùng đám bạn không say -</Text>
+          <Text style={[styles.header, { fontWeight: 'bold',color: 'black'  }]}>không về</Text>
           <Options options={options} handleOptionPress={handleOptionPress} backgroudCode={backgroudCode} />
           
         </>

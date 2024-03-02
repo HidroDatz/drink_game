@@ -37,8 +37,8 @@ const CoupleGameScreen = () => {
         <>
           <Image source={logo} style={styles.logo} />
           <CoupleButton />
-          <Text style={[styles.header, { marginTop: 20, fontWeight: 'bold' }]}>Khám phá "chiều sâu"</Text>
-          <Text style={[styles.header, { fontWeight: 'bold' }]}>của nhau</Text>
+          <Text style={[styles.header, { marginTop: 20, fontWeight: 'bold',color: 'black' }]}>Khám phá "chiều sâu"</Text>
+          <Text style={[styles.header, { fontWeight: 'bold',color: 'black'  }]}>của nhau</Text>
           <Options options={options} handleOptionPress={handleOptionPress} backgroudCode={"#000000"} />
           
         </>

@@ -131,8 +131,8 @@ const CoupleGameplay = () => {
         </View>
       </Modal>
       {players.length > 0 && <WheelRandom players={players} />}
-      <TouchableOpacity onPress={handleHintPress}>
-        <Image source={hint} style={{ width: 100, height: 100, transform: [{ translateY: -320 }, { translateX: 150 }] }} />
+      <TouchableOpacity onPress={handleHintPress} style={styles.imageContainer}>
+        <Image source={hint} style={styles.image} />
       </TouchableOpacity>
       {isHintVisible && (<HintPlay isVisible={isHintVisible} onClose={() => setIsHintVisible(false)}/>)}
       <AdModal />
@@ -161,6 +161,15 @@ const styles = StyleSheet.create({
     elevation: 5,
     marginBottom: "40%",
     backgroundColor: '#e78426'
+  },
+  imageContainer: {
+    position: 'absolute',
+    top: 0, 
+    right: -0, 
+  },
+  image: {
+    width: 100, 
+    height: 100, 
   },
   text: {
     fontSize: 22,

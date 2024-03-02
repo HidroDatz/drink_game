@@ -39,8 +39,8 @@ const NeverHaveIEverHomeScreen = () => {
           <Image source={logo} style={styles.logo} />
           <YesNoButton />
 
-          <Text style={[styles.header, { marginTop: 20, fontWeight: 'bold' }]}>KHÁM PHÁ NHỮNG TRẢI NGHIỆM</Text>
-          <Text style={[styles.header, { fontWeight: 'bold' }]}>ĐỘC NHẤT CỦA NHAU</Text>
+          <Text style={[styles.header, { marginTop: 20, fontWeight: 'bold',color: 'black' }]}>KHÁM PHÁ NHỮNG TRẢI NGHIỆM</Text>
+          <Text style={[styles.header, { fontWeight: 'bold',color: 'black'  }]}>ĐỘC NHẤT CỦA NHAU</Text>
           <Options options={options} handleOptionPress={handleOptionPress} />
           
         </>

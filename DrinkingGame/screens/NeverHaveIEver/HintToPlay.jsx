@@ -1,5 +1,6 @@
+
 import React, { useState } from 'react';
-import { View, StyleSheet,Text, Image, Modal, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
+import { View, StyleSheet, Text, Image, Modal, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import Swiper from 'react-native-deck-swiper';
 
 function HintPlay({ isVisible, onClose }) {
@@ -24,10 +25,9 @@ function HintPlay({ isVisible, onClose }) {
     };
 
     return (
-        <Modal visible={isVisible} onRequestClose={onClose} transparent={true}>
+        <Modal onRequestClose={onClose} transparent={true}>
 
             <TouchableWithoutFeedback onPress={handleOutsideClick}>
-                
                 <View style={styles.container}>
                     <Swiper
                         cards={hintImages}
