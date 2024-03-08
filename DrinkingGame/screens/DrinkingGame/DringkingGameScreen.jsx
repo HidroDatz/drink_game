@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import AdModal from '../AdModal';
 import Options from '../Options';
 import BeerButton from '../Button/Drinking';
+import AsyncStorage from '@react-native-community/async-storage';
 
 const DrinkingGameScreen = () => {
   const logo = require('../../asset/logo.png');
@@ -15,7 +16,12 @@ const DrinkingGameScreen = () => {
     { text: 'GÓI PRO 64K', helpText: '80 thẻ bài', route: 'Pro' },
     { text: 'GÓI PROMAX 79K', helpText: '100 thẻ bài', route: 'Promax' },
   ];
-
+  AsyncStorage.getItem('isBuyAds')
+    .then((value) => {
+      if (value == 'true') {
+        setAdModalVisible(false)
+      }
+    })
   const closeAd = () => {
     setAdModalVisible(false);
   };
@@ -33,15 +39,15 @@ const DrinkingGameScreen = () => {
 
   return (
     <View style={[styles.container]}>
-      <AdModal isVisible={adModalVisible} onClose={closeAd} /> 
+      <AdModal isVisible={adModalVisible} onClose={closeAd} />
       {!adModalVisible && (
         <>
           <Image source={logo} style={styles.logo} />
           <BeerButton />
-          <Text style={[styles.header, { marginTop: 20, fontWeight: 'bold',color: 'black'  }]}>Cùng đám bạn không say -</Text>
-          <Text style={[styles.header, { fontWeight: 'bold',color: 'black'  }]}>không về</Text>
+          <Text style={[styles.header, { marginTop: 20, fontWeight: 'bold', color: 'black' }]}>Cùng đám bạn không say -</Text>
+          <Text style={[styles.header, { fontWeight: 'bold', color: 'black' }]}>không về</Text>
           <Options options={options} handleOptionPress={handleOptionPress} backgroudCode={backgroudCode} />
-          
+
         </>
       )}
     </View>

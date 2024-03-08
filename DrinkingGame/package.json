@@ -10,8 +10,10 @@
     "test": "jest"
   },
   "dependencies": {
+    "@react-native-community/async-storage": "^1.12.1",
     "react": "18.2.0",
     "react-native": "0.73.2",
+    "react-native-async-storage": "^0.0.1",
     "react-native-fast-image": "7.0.0",
     "react-native-gif": "^1.0.3",
     "react-native-google-mobile-ads": "^12.10.0",

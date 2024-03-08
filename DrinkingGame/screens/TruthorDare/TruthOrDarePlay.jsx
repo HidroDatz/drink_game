@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, TextInput, Alert } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, TextInput, Alert  } from 'react-native';
 import Swiper from 'react-native-deck-swiper';
 import { useRoute } from '@react-navigation/native';
 import PlayerInputModal from '../PlayerInputModal';
@@ -8,22 +7,21 @@ import WheelRandom from '../WheelPlayer';
 import AdModal from '../AdScreens/AdMod'
 import HintPlay from '../NeverHaveIEver/HintToPlay';
 import AsyncStorage from '@react-native-community/async-storage';
-const DringkingGamePlay = () => {
+import { useNavigation } from '@react-navigation/native';
+
+const TruthOrDarePlay = () => {
   const route = useRoute();
   const { optionPlay } = route.params;
   const navigation = useNavigation();
-  const [truthOrDareList, setTruthOrDareList] = useState([]);
-  const [truthOrDareProList, setTruthOrDareProList] = useState([]);
-  const [truthOrDarePromaxList, setTruthOrDarePromaxList] = useState([]);
+
   const [isDisplayPayRequest, setIsDisplayPayRequest] = useState(true);
   const [playerInputModalVisible, setPlayerInputModalVisible] = useState(true);
   const [players, setPlayers] = useState([]);
-  const [showHelpText, setShowHelpText] = useState(false);
-  const hint = require('../../asset/hint_to_play/1.png')
-  const qrpro = require('../../asset/QR/TOINOCPRO.png')
-  const qrpromax = require('../../asset/QR/TOINOCPROMAX.png')
+  const hint = require('../../asset/hint_to_play/1.png');
   const [isHintVisible, setIsHintVisible] = useState(false);
   const [showAdModal, setShowAdModal] = useState(true);
+  const qrpro = require('../../asset/QR/TODPRO.png')
+  const qrpromax = require('../../asset/QR/TODPROMAX.png')
   const [showExtraContent, setShowExtraContent] = useState(false);
   const [codeInput, setCodeInput] = useState('');
   AsyncStorage.getItem('isBuyAds')
@@ -35,49 +33,40 @@ const DringkingGamePlay = () => {
   const handleHintPress = () => {
     setIsHintVisible(true);
   };
-  useEffect(() => {
-    if (optionPlay === 'Basic') {
-      setIsDisplayPayRequest(false);
-    }
-  }, []);
-  AsyncStorage.getItem('isBuyOIBANOIPRO')
+  AsyncStorage.getItem('isBuyAds')
+    .then((value) => {
+      if (value == 'true') {
+        setShowAdModal(false)
+      }
+    })
+  AsyncStorage.getItem('isBuyAds')
+    .then((value) => {
+      if (value == 'true') {
+        setShowAdModal(false)
+      }
+    })
+  AsyncStorage.getItem('isBuyTODPRO')
     .then((value) => {
       if (value == 'true' && optionPlay === 'Pro') {
         setIsDisplayPayRequest(false)
       }
     })
-  AsyncStorage.getItem('isBuyOIBANOIPROMAX')
+  AsyncStorage.getItem('isBuyTODPROMAX')
     .then((value) => {
       if (value == 'true' && optionPlay === 'Promax') {
         setIsDisplayPayRequest(false)
       }
     })
   const handleCanclePay = () => {
-    navigation.navigate('Drinking Game');
+    navigation.navigate('Truth or Dare');
   }
-  useEffect(() => {
-    const jsonData = require('../../data/BasicDrinkingGame.json');
-    setTruthOrDareList(jsonData);
-  }, []);
-
-  useEffect(() => {
-    if (optionPlay === 'Pro') {
-      const proData = require('../../data/ProDrinkingGame.json');
-      setTruthOrDareProList(proData);
-    } else if (optionPlay === 'Promax') {
-      const proData = require('../../data/ProDrinkingGame.json');
-      const promaxData = require('../../data/PromaxDrinkingGame.json');
-      const combinedData = [...proData, ...promaxData];
-      setTruthOrDarePromaxList(combinedData);
-    }
-  }, [optionPlay]);
   const handleSubmitCode = () => {
-    if (codeInput === 'Cakgame-010201') {
-      AsyncStorage.setItem('isBuyOIBANOIPRO', 'true');
+    if (codeInput === 'Cakgame-010501') {
+      AsyncStorage.setItem('isBuyTODPRO', 'true');
       setShowExtraContent(false);
       Alert.alert('Thông báo', 'Mã code hợp lệ');
-    } else if (codeInput === 'Cakgame-010202') {
-      AsyncStorage.setItem('isBuyOIBANOIPROMAX', 'true');
+    } else if (codeInput === 'Cakgame-010502') {
+      AsyncStorage.setItem('isBuyTODPROMAX', 'true');
       setShowExtraContent(false);
       Alert.alert('Thông báo', 'Mã code hợp lệ');
     }
@@ -85,6 +74,29 @@ const DringkingGamePlay = () => {
       Alert.alert('Thông báo', 'Mã code không hợp lệ. Vui lòng kiểm tra lại.');
     }
   };
+  let truthData = require('../../data/BasicTruth.json');
+  let dareData = require('../../data/BasicDare.json');
+  if (optionPlay === 'Pro') {
+    truthData = [...truthData, ...require('../../data/ProTruth.json')];
+    dareData = [...dareData, ...require('../../data/ProDare.json')];
+  } else if (optionPlay === 'Promax') {
+    truthData = [...truthData, ...require('../../data/ProCouple.json'), ...require('../../data/PromaxCouple.json')];
+    dareData = [...dareData, ...require('../../data/ProDare.json'), ...require('../../data/PromaxDare.json')];
+  }
+  const combinedList = truthData.map((truth, index) => {
+    const truthAndDareContent = `Trả lời thành thật\n${truth}\nHOẶC\n${dareData[index]}`;
+    return {
+      id: `combined_${index}`,
+      content: truthAndDareContent,
+      type: 'combined'
+    };
+  });
+
+  useEffect(() => {
+    if (optionPlay === 'Basic') {
+      setIsDisplayPayRequest(false);
+    }
+  }, []);
 
   const handleRemovePlayer = index => {
     const updatedPlayers = [...players];
@@ -104,43 +116,37 @@ const DringkingGamePlay = () => {
     return array;
   };
 
-  let cardsToRender = [];
 
-  if (optionPlay === 'Pro') {
-    cardsToRender = [...truthOrDareList, ...truthOrDareProList];
-  } else if (optionPlay === 'Promax') {
-    cardsToRender = [...truthOrDareList, ...truthOrDarePromaxList];
-  } else {
-    cardsToRender = [...truthOrDareList];
-  }
-
-  const shuffledCards = shuffleArray(cardsToRender);
-  const renderCard = (card, index) => {
-    const isCardInList = truthOrDareList.includes(card);
-    const cardStyle = isCardInList
-      ? { ...styles.card }
-      : styles.card;
-
-
+  const shuffledCards = shuffleArray(combinedList);
+  const handleRenderCard = (card, index) => {
+    const contentParts = card.content.split(/(Trả lời thành thật\n)|(HOẶC)/);
     return (
-      <View style={[styles.cardContainer]}>
+      <View style={styles.cardContainer}>
         <PlayerInputModal
           isVisible={playerInputModalVisible}
           onClose={() => setPlayerInputModalVisible(false)}
           onSubmitPlayer={onSubmitPlayer}
-          showHelpText={setShowHelpText}
           players={players}
           onRemovePlayer={handleRemovePlayer}
         />
-
         {!playerInputModalVisible && (
-          <View style={[[cardStyle]]}>
-            <Text style={styles.text}>{card}</Text>
+          <View style={styles.card}>
+            <Text style={styles.text}>
+              {contentParts.map((part, i) => {
+                if (part === 'Trả lời thành thật\n' || part === 'HOẶC') {
+                  return <Text key={i} style={styles.blackText}>{part}</Text>;
+                }
+                return <Text key={i}>{part}</Text>;
+              })}
+            </Text>
           </View>
         )}
       </View>
     );
   };
+
+
+
 
 
   return (
@@ -149,12 +155,13 @@ const DringkingGamePlay = () => {
 
       <Swiper
         cards={shuffledCards}
-        renderCard={renderCard}
+        renderCard={handleRenderCard}
         cardIndex={0}
         stackSize={3}
         stackSeparation={-15}
         backgroundColor="transparent"
       />
+
       <Modal visible={isDisplayPayRequest} animationType="slide">
         <View style={styles.modalContainer}>
           <Image source={optionPlay === 'Pro' ? qrpro : qrpromax} style={{ width: "60%", height: "50%" }} />
@@ -199,7 +206,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   card: {
-    height: '60%',
+    height: '70%',
     width: '80%',
     borderRadius: 10,
     padding: 20,
@@ -217,6 +224,13 @@ const styles = StyleSheet.create({
   image: {
     width: 100,
     height: 100,
+  },
+  blackText: {
+    color: 'black',
+    fontSize: 22,
+    textAlign: 'center',
+    fontFamily: 'Mansalva-Regular',
+
   },
   text: {
     fontSize: 22,
@@ -250,6 +264,10 @@ const styles = StyleSheet.create({
   adTimer: {
     fontSize: 14,
     color: 'gray',
+  },
+  modalContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   modalText: {
     fontSize: 18,
@@ -301,4 +319,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DringkingGamePlay;
+export default TruthOrDarePlay;

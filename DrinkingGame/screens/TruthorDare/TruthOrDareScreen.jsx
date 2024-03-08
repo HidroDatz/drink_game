@@ -3,35 +3,32 @@ import { StyleSheet, View, Text, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AdModal from '../AdModal';
 import Options from '../Options';
-import YesNoButton from '../Button/NeverHaveIEver';
+import TruthOrDareButton from '../Button/TruthOrDare';
 import AsyncStorage from '@react-native-community/async-storage';
 
-const NeverHaveIEverHomeScreen = () => {
+const TruthOrDareScreen = () => {
   const logo = require('../../asset/logo.png');
   const navigation = useNavigation();
   const [adModalVisible, setAdModalVisible] = useState(true);
-
   const options = [
-    { text: 'GÓI CƠ BẢN', helpText: '60 thẻ bài', route: 'Basic' },
-    { text: 'GÓI PRO 64K', helpText: '80 thẻ bài', route: 'Pro' },
-    { text: 'GÓI PROMAX 79K', helpText: '100 thẻ bài', route: 'Promax' },
+    { text: 'Gói cơ bản', helpText: '60 thẻ bài', route: 'Basic' },
+    { text: 'Gói Pro 64k', helpText: '80 thẻ bài', route: 'Pro' },
+    { text: 'Gói Promax 79k', helpText: '100 thẻ bài', route: 'Promax' },
   ];
-
-  const closeAd = () => {
-    setAdModalVisible(false);
-  };
   AsyncStorage.getItem('isBuyAds')
     .then((value) => {
-      console.log(value)
       if (value == 'true') {
         setAdModalVisible(false)
       }
     })
+  const closeAd = () => {
+    setAdModalVisible(false);
+  };
   const handleOptionPress = optionPlay => {
     if (optionPlay === 'AddPlayer') {
       setPlayerInputModalVisible(true);
     } else {
-      navigation.navigate('Never Have I Ever Play', {
+      navigation.navigate('Truth or Dare Play', {
         optionPlay: optionPlay,
       });
     }
@@ -41,16 +38,15 @@ const NeverHaveIEverHomeScreen = () => {
 
   return (
     <View style={[styles.container]}>
-      <AdModal isVisible={adModalVisible} onClose={closeAd} /> 
+      <AdModal isVisible={adModalVisible} onClose={closeAd} />
       {!adModalVisible && (
         <>
           <Image source={logo} style={styles.logo} />
-          <YesNoButton />
+          <TruthOrDareButton />
+          <Text style={[styles.header, { marginTop: 20, fontWeight: 'bold', color: 'black' }]}>Chạm vào ranh giới sự thật và</Text>
+          <Text style={[styles.header, { fontWeight: 'bold', color: 'black' }]}>thách thức của bản thân</Text>
+          <Options options={options} handleOptionPress={handleOptionPress} backgroudCode={"#000000"} />
 
-          <Text style={[styles.header, { marginTop: 20, fontWeight: 'bold',color: 'black' }]}>KHÁM PHÁ NHỮNG TRẢI NGHIỆM</Text>
-          <Text style={[styles.header, { fontWeight: 'bold',color: 'black'  }]}>ĐỘC NHẤT CỦA NHAU</Text>
-          <Options options={options} handleOptionPress={handleOptionPress} />
-          
         </>
       )}
     </View>
@@ -92,4 +88,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default NeverHaveIEverHomeScreen;
+export default TruthOrDareScreen;

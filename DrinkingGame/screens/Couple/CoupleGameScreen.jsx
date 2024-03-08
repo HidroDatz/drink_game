@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import AdModal from '../AdModal';
 import Options from '../Options';
 import CoupleButton from '../Button/CoupleButton';
+import AsyncStorage from '@react-native-community/async-storage';
 
 const CoupleGameScreen = () => {
   const logo = require('../../asset/logo.png');
@@ -14,7 +15,13 @@ const CoupleGameScreen = () => {
     { text: 'Bộ "Đậu dào" 64k', helpText: '80 thẻ bài', route: 'Pro' },
     { text: 'Bộ "Khoái" 79k', helpText: '100 thẻ bài', route: 'Promax' },
   ];
-
+  
+  AsyncStorage.getItem('isBuyAds')
+  .then((value) => {
+    if(value == 'true'){
+      setAdModalVisible(false)
+    }
+  })
   const closeAd = () => {
     setAdModalVisible(false);
   };

@@ -15,6 +15,8 @@ import DrinkingGameScreen from './screens/DrinkingGame/DringkingGameScreen';
 import DringkingGamePlay from './screens/DrinkingGame/DringkingGamePlay';
 import CoupleGameScreen from './screens/Couple/CoupleGameScreen';
 import CoupleGameplay from './screens/Couple/CoupleGamePlay';
+import TruthOrDarePlay from './screens/TruthorDare/TruthOrDarePlay';
+import TruthOrDareScreen from './screens/TruthorDare/TruthOrDareScreen';
 const Stack = createNativeStackNavigator();
 
 const HomeScreen = () => {
@@ -54,6 +56,9 @@ const HomeScreen = () => {
   };
   const handleCoupleButtonClick = () => {
     navigation.navigate('Couple Game');
+  };
+  const handleTruthOrDareButtonClick = () => {
+    navigation.navigate('Truth or Dare');
   };
   const startButtonAnimation = (index) => {
     if (buttonRefs.current[index]) {
@@ -109,7 +114,7 @@ const HomeScreen = () => {
             </Animatable.View>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={handleOtherButtonClick} style={{ width: '100%' }}>
+          <TouchableOpacity onPress={handleTruthOrDareButtonClick} style={{ width: '100%' }}>
             <Animatable.View
               {...buttonAnimationProps}
               style={[styles.buttonContainer]}
@@ -136,6 +141,8 @@ const App = () => {
         <Stack.Screen name="Service Updating" component={ComingSoonScreen} />
         <Stack.Screen name="Never Have I Ever Play" component={NeverHaveIEverPlay} />
         <Stack.Screen name="Drinking Game Play" component={DringkingGamePlay} />
+        <Stack.Screen name="Truth or Dare Play" component={TruthOrDarePlay} />
+        <Stack.Screen name="Truth or Dare" component={TruthOrDareScreen} />
 
       </Stack.Navigator>
     </NavigationContainer>
